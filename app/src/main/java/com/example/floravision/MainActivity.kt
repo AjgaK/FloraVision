@@ -15,10 +15,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.example.floravision.ml.PlantRecognitionModel
-import org.tensorflow.lite.DataType
-import org.tensorflow.lite.support.image.TensorImage
-import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 
 
 class MainActivity : AppCompatActivity() {
@@ -30,6 +26,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var result: TextView
     private lateinit var welcome: TextView
 
+    // Image classifier
+    private lateinit var classifier: Classifier
+
     // Bitmap of the image to classify
     private lateinit var imageBitmap : Bitmap
 
@@ -39,9 +38,6 @@ class MainActivity : AppCompatActivity() {
 
     //List of classification labels
     private lateinit var labels : List<String>
-
-    //Required image size for the TensorFlow Lite model
-    private val imageSize = 224
 
     /**
      * Called when the activity is created.
@@ -60,6 +56,8 @@ class MainActivity : AppCompatActivity() {
         formatWelcomeMessage()
         // Load classification labels from the "labels.txt" file in the assets folder
         labels = application.assets.open("labels.txt").bufferedReader().readLines()
+        // Create classifier object
+        classifier = Classifier(this, labels)
 
         // Register a launcher to handle camera results
         takePhotoForResult = registerForActivityResult(
@@ -70,11 +68,9 @@ class MainActivity : AppCompatActivity() {
                 imageBitmap = data?.extras!!.get("data") as Bitmap
                 imageView.setImageBitmap(imageBitmap)
                 welcome.text = ""
-                // Resize the image to the dimensions required by the Tensorflow Lite model
-                imageBitmap = Bitmap.createScaledBitmap(imageBitmap, imageSize, imageSize, false)
                 // Add a lighter border to an image after it was added
                 updateBorder()
-                classifyImage()
+                formatResults()
             }
         }
 
@@ -87,11 +83,9 @@ class MainActivity : AppCompatActivity() {
                 imageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, selectedPhotoUri)
                 imageView.setImageBitmap(imageBitmap)
                 welcome.text = ""
-                // Resize the image to the dimensions required by the Tensorflow Lite model
-                imageBitmap = Bitmap.createScaledBitmap(imageBitmap, imageSize, imageSize, false)
                 // Add a lighter border to an image after it was added
                 updateBorder()
-                classifyImage()
+                formatResults()
             }
         }
 
@@ -184,29 +178,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Classifies the input image using a TensorFlow Lite model.
+     * Obtains the classification results from the Classifier
      * Displays the top-3 classification results with their confidence scores.
      * The highest confidence result is displayed with larger, bold font.
      */
-    private fun classifyImage() {
-        // Loading the image
-        val tensorImage = TensorImage(DataType.FLOAT32)
-        tensorImage.load(imageBitmap)
-        // Initializing the model
-        val model = PlantRecognitionModel.newInstance(this)
-        // Preparing input data
-        val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
-        inputFeature0.loadBuffer(tensorImage.buffer)
-        // Processing the image through the model
-        val outputs = model.process(inputFeature0)
-        val outputFeature0 = outputs.outputFeature0AsTensorBuffer.floatArray
-
-        // Formatting the result
-        val labeledResults = labels.zip(outputFeature0.toList())
-        val topResults = labeledResults.sortedByDescending { it.second }.take(3)
+    private fun formatResults() {
+        // Get top 3 results with confidence score > 0.00%
+        val topResults = classifier.classifyImage(imageBitmap).filter { confidence ->
+            val formattedConfidence = "%.2f".format(confidence.second * 100).toDouble()
+            formattedConfidence > 0.00 }.take(3)
 
         val spannableBuilder = SpannableStringBuilder()
 
+        // Combine the confidence scores with labels and format the first result to be bigger
         topResults.forEachIndexed { index, (label, confidence) ->
             val confidenceText = "${"%.2f".format(confidence * 100)}%"
             val resultText = "$label: $confidenceText\n"
@@ -228,7 +212,5 @@ class MainActivity : AppCompatActivity() {
         }
 
         result.text = spannableBuilder
-
-        model.close()
     }
 }
