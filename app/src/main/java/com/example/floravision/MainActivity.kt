@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.widget.Button
 import android.widget.ImageView
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var gallery : Button
     private lateinit var imageView: ImageView
     private lateinit var result: TextView
+    private lateinit var welcome: TextView
 
     // Bitmap of the image to classify
     private lateinit var imageBitmap : Bitmap
@@ -53,8 +55,9 @@ class MainActivity : AppCompatActivity() {
         camera = findViewById(R.id.newPictureBtn)
         gallery = findViewById(R.id.selectBtn)
         result = findViewById(R.id.result)
+        welcome = findViewById(R.id.welcome)
         imageView = findViewById(R.id.imageView)
-
+        formatWelcomeMessage()
         // Load classification labels from the "labels.txt" file in the assets folder
         labels = application.assets.open("labels.txt").bufferedReader().readLines()
 
@@ -66,6 +69,7 @@ class MainActivity : AppCompatActivity() {
                 val data = result.data
                 imageBitmap = data?.extras!!.get("data") as Bitmap
                 imageView.setImageBitmap(imageBitmap)
+                welcome.text = ""
                 // Resize the image to the dimensions required by the Tensorflow Lite model
                 imageBitmap = Bitmap.createScaledBitmap(imageBitmap, imageSize, imageSize, false)
                 // Add a lighter border to an image after it was added
@@ -82,6 +86,7 @@ class MainActivity : AppCompatActivity() {
                 val selectedPhotoUri = data?.data
                 imageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, selectedPhotoUri)
                 imageView.setImageBitmap(imageBitmap)
+                welcome.text = ""
                 // Resize the image to the dimensions required by the Tensorflow Lite model
                 imageBitmap = Bitmap.createScaledBitmap(imageBitmap, imageSize, imageSize, false)
                 // Add a lighter border to an image after it was added
@@ -121,9 +126,61 @@ class MainActivity : AppCompatActivity() {
         pickImageFromGalleryForResult.launch(galleryIntent)
     }
 
+    /**
+     * Updates the border width (strokeWidth) for the ShapeableImageView.
+     */
     private fun updateBorder() {
         val shapeableImageView = findViewById<com.google.android.material.imageview.ShapeableImageView>(R.id.imageView)
         shapeableImageView.strokeWidth = resources.getDimension(R.dimen.stroke_width)
+    }
+
+    /**
+     * Formats and displays the welcome message in the TextView with specific parts bolded and enlarged.
+     */
+    private fun formatWelcomeMessage(){
+        val welcomeText = """
+        Welcome to FloraVision! 🌸
+        FloraVision makes it easy to identify flower species in just a few steps. Here's a quick guide to get started:
+        
+        1. Upload or capture a photo of a flower
+        Use one of the buttons to upload a picture from your gallery or take a new one with your camera. Make sure the flower is clearly visible for the best results!
+        2. Let the app work its magic
+        Once the image is uploaded, FloraVision will analyse it and display predictions about the flower's species.
+        3. View the results
+        Check out the top predictions and learn more about the flowers around you!
+        
+        Enjoy exploring the world of flowers with FloraVision! 🌺
+    """.trimIndent()
+
+        val spannableBuilder = SpannableStringBuilder(welcomeText)
+        val boldParts = listOf(
+            "Welcome to FloraVision! 🌸",
+            "1. Upload or capture a photo of a flower",
+            "2. Let the app work its magic",
+            "3. View the results",
+            "Enjoy exploring the world of flowers with FloraVision! 🌺"
+        )
+
+        for (part in boldParts) {
+            val startIndex = welcomeText.indexOf(part)
+            if (startIndex != -1) {
+                val endIndex = startIndex + part.length
+                spannableBuilder.setSpan(
+                    android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                    startIndex,
+                    endIndex,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                spannableBuilder.setSpan(
+                    android.text.style.RelativeSizeSpan(1.2f),
+                    startIndex,
+                    endIndex,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+        }
+
+        welcome.text = spannableBuilder
     }
 
     /**
