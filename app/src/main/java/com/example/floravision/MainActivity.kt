@@ -143,16 +143,16 @@ class MainActivity : AppCompatActivity() {
         3. View the results
         Check out the top predictions and learn more about the flowers around you!
         
-        Enjoy exploring the world of flowers with FloraVision! 🌺
+        Enjoy exploring the world of flowers with FloraVision!
     """.trimIndent()
 
         val spannableBuilder = SpannableStringBuilder(welcomeText)
         val boldParts = listOf(
-            "Welcome to FloraVision! 🌸",
+            "Welcome to FloraVision!",
             "1. Upload or capture a photo of a flower",
             "2. Let the app work its magic",
             "3. View the results",
-            "Enjoy exploring the world of flowers with FloraVision! 🌺"
+            "Enjoy exploring the world of flowers with FloraVision!"
         )
 
         for (part in boldParts) {
