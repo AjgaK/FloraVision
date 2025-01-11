@@ -14,14 +14,14 @@
         android:layout_height="50dp"
         android:src="@drawable/logotyp_floravision_2_2"
         android:layout_marginBottom="15dp"
-        android:layout_marginTop="10dp"
-        android:contentDescription="Logotype"
+        android:layout_marginTop="15dp"
+        android:contentDescription="@string/logotype_description"
         app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imageView"
         android:layout_width="325dp"
         android:layout_height="325dp"
@@ -32,7 +32,10 @@
         app:layout_constraintBottom_toTopOf="@+id/result"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"/>
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:strokeWidth="0dp"
+        app:strokeColor="@color/vanilla"
+        android:scaleType="centerCrop"/>
 
     <Button
         android:id="@+id/selectBtn"
@@ -45,7 +48,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/vanilla"
-        android:backgroundTint="@color/MainColor"
+        android:backgroundTint="@color/green"
         app:layout_constraintBottom_toTopOf="@+id/newPictureBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +65,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/vanilla"
-        android:backgroundTint="@color/MainColor"
+        android:backgroundTint="@color/green"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,6 +79,7 @@
         android:text=""
         android:textAlignment="center"
         android:textSize="25sp"
+        android:textColor="@color/text"
         app:layout_constraintBottom_toTopOf="@+id/selectBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

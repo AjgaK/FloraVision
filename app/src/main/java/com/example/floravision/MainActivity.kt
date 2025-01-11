@@ -68,6 +68,8 @@ class MainActivity : AppCompatActivity() {
                 imageView.setImageBitmap(imageBitmap)
                 // Resize the image to the dimensions required by the Tensorflow Lite model
                 imageBitmap = Bitmap.createScaledBitmap(imageBitmap, imageSize, imageSize, false)
+                // Add a lighter border to an image after it was added
+                updateBorder()
                 classifyImage()
             }
         }
@@ -82,6 +84,8 @@ class MainActivity : AppCompatActivity() {
                 imageView.setImageBitmap(imageBitmap)
                 // Resize the image to the dimensions required by the Tensorflow Lite model
                 imageBitmap = Bitmap.createScaledBitmap(imageBitmap, imageSize, imageSize, false)
+                // Add a lighter border to an image after it was added
+                updateBorder()
                 classifyImage()
             }
         }
@@ -115,6 +119,11 @@ class MainActivity : AppCompatActivity() {
         val galleryIntent = Intent(Intent.ACTION_GET_CONTENT)
         galleryIntent.setType("image/*")
         pickImageFromGalleryForResult.launch(galleryIntent)
+    }
+
+    private fun updateBorder() {
+        val shapeableImageView = findViewById<com.google.android.material.imageview.ShapeableImageView>(R.id.imageView)
+        shapeableImageView.strokeWidth = resources.getDimension(R.dimen.stroke_width)
     }
 
     /**
