@@ -4,4 +4,6 @@
     <string name="take_picture">Take a picture</string>
     <string name="select_image">Select from gallery</string>
     <string name="logotype_description">Logotype</string>
+    <string name="no_predictions">No confident predictions available for the provided image.</string>
+    <string name="welcome_message">Welcome to FloraVision!\nFloraVision makes it easy to identify flower species in just a few steps. Here\'s a quick guide to get started:\n\n1. Upload or capture a photo of a flower\nUse one of the buttons to upload a picture from your gallery or take a new one with your camera. Make sure the flower is clearly visible for the best results!\n2. Let the app work its magic\nOnce the image is uploaded, FloraVision will analyse it and display predictions about the flower\'s species.\n3. View the results\nCheck out the top predictions and learn more about the flowers around you!\n\nEnjoy exploring the world of flowers with FloraVision!</string>
 </resources>

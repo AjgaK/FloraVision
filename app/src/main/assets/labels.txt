@@ -1,16 +1,16 @@
-astilbe
-bellflower
-black_eyed_susan
-calendula
-california_poppy
-carnation
-common_daisy
-coreopsis
-daffodil
-dandelion
-iris
-magnolia
-rose
-sunflower
-tulip
-water_lily
+Astilbe
+Bellflower
+Black eyed susan
+Calendula
+California poppy
+Carnation
+Common daisy
+Coreopsis
+Daffodil
+Dandelion
+Iris
+Magnolia
+Rose
+Sunflower
+Tulip
+Water lily

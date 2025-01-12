@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Spannable
@@ -65,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         ) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
-                imageBitmap = data?.extras!!.get("data") as Bitmap
+                imageBitmap = data?.extras?.get("data") as Bitmap
                 imageView.setImageBitmap(imageBitmap)
                 welcome.text = ""
                 // Add a lighter border to an image after it was added
@@ -81,6 +83,7 @@ class MainActivity : AppCompatActivity() {
                 val data = result.data
                 val selectedPhotoUri = data?.data
                 imageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, selectedPhotoUri)
+                welcome.text = ""
                 imageView.setImageBitmap(imageBitmap)
                 welcome.text = ""
                 // Add a lighter border to an image after it was added
@@ -132,19 +135,7 @@ class MainActivity : AppCompatActivity() {
      * Formats and displays the welcome message in the TextView with specific parts bolded and enlarged.
      */
     private fun formatWelcomeMessage(){
-        val welcomeText = """
-        Welcome to FloraVision! 🌸
-        FloraVision makes it easy to identify flower species in just a few steps. Here's a quick guide to get started:
-        
-        1. Upload or capture a photo of a flower
-        Use one of the buttons to upload a picture from your gallery or take a new one with your camera. Make sure the flower is clearly visible for the best results!
-        2. Let the app work its magic
-        Once the image is uploaded, FloraVision will analyse it and display predictions about the flower's species.
-        3. View the results
-        Check out the top predictions and learn more about the flowers around you!
-        
-        Enjoy exploring the world of flowers with FloraVision!
-    """.trimIndent()
+        val welcomeText = getString(R.string.welcome_message)
 
         val spannableBuilder = SpannableStringBuilder(welcomeText)
         val boldParts = listOf(
@@ -187,6 +178,11 @@ class MainActivity : AppCompatActivity() {
         val topResults = classifier.classifyImage(imageBitmap).filter { confidence ->
             val formattedConfidence = "%.2f".format(confidence.second * 100).toDouble()
             formattedConfidence > 0.00 }.take(3)
+
+        if (topResults.isEmpty()) {
+            result.text = getString(R.string.no_predictions)
+            return
+        }
 
         val spannableBuilder = SpannableStringBuilder()
 

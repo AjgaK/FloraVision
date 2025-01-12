@@ -2,6 +2,7 @@ package com.example.floravision
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import com.example.floravision.ml.PlantRecognitionModel
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.image.TensorImage
@@ -33,7 +34,6 @@ class Classifier(private val context: Context, private val labels: List<String>)
 
         val labeledResults = labels.zip(outputFeature0.toList())
         model.close()
-
         return labeledResults.sortedByDescending { it.second }
     }
 }
