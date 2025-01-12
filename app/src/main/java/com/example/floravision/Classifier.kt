@@ -2,7 +2,6 @@ package com.example.floravision
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import com.example.floravision.ml.PlantRecognitionModel
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.image.TensorImage
